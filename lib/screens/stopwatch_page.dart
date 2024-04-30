@@ -273,9 +273,16 @@ class _StopwatchPageState extends State<StopwatchPage> {
                   );
                   break;
                 case 2:
+<<<<<<< HEAD
+                // Do nothing, we're already on the BantuanPage
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => BantuanPage()),
+=======
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => const BantuanPage()),
+>>>>>>> ad33621369d942d96c80c3e8c91df89a4e48b5f3
                   );
                   break;
               }
