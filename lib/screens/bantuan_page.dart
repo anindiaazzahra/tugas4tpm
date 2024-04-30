@@ -6,7 +6,7 @@ import 'package:tugas4tpm/screens/login_page.dart';
 import 'stopwatch_page.dart';
 
 class BantuanPage extends StatefulWidget {
-  const BantuanPage({super.key});
+  const BantuanPage({Key? key}) : super(key: key);
 
   @override
   State<BantuanPage> createState() => _BantuanPageState();
@@ -23,26 +23,107 @@ class _BantuanPageState extends State<BantuanPage> {
         centerTitle: true,
         actions: [
           IconButton(
-              icon: const Icon(
-                Icons.logout,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                );
-              }
+            icon: const Icon(
+              Icons.logout,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
+            },
           ),
         ],
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Tentang Aplikasi',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                '1. Ketika di Halaman Login masukkan username dan password.',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                '2. Terdapat 3 Menu pada Bottom Navigation Bar (Home, StopWatch, Bantuan)',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                '3. Terdapat 5 Menu pada halaman Home (Daftar Anggota, Check bilangan prima, Hitung luas dan keliling Segitiga, Daftar Situs Rekomendasi, Favorite)',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                '4. Menu StopWatch berisikan fitur yang dapat digunakan sebagai alat StopWatch',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                '5. Menu Bantuan menampilkan cara penggunaan aplikasi',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                '6. Menu Daftar Anggota berisi Nama dan NIM angota yang mengerjakan aplikasi ini',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                '7. Menu Check Bilangan Prima berguna untuk mengecek suatu Bilangan termasuk Prima atau tidak',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                '8. Menu Hitung luas dan keliling Segitiga berguna untuk menghitung luas dan keliling Segitiga dengan akurat',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                '9. Menu Daftar Situs Rekomendasi menampilkan Rekomendasi Album',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                '10. Menu Favorite menampilkan Album yang telah diberi checkmark favorite pada menu Daftar Situs Rekomendasi',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                '11. Terdapat Menu Logout di pojok kanan atas untuk logout dari Aplikasi',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              SizedBox(height: 10),
+            ],
+          ),
+        ),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: Colors.grey.shade800,
-          // borderRadius: BorderRadius.only(
-          //   topLeft: Radius.circular(28.0),  // Rounded top left corner
-          //   topRight: Radius.circular(28.0), // Rounded top right corner
-          // ),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -71,7 +152,10 @@ class _BantuanPageState extends State<BantuanPage> {
                   );
                   break;
                 case 2:
-                // Do nothing, we're already on the BantuanPage
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => BantuanPage()),
+                  );
                   break;
               }
             },

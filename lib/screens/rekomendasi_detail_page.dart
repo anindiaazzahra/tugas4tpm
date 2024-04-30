@@ -1,20 +1,50 @@
 import 'package:flutter/material.dart';
-import 'package:tugas4tpm/models/rekomendasi_album.dart';
+import 'package:tugas4tpm/screens/favorite_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:tugas4tpm/models/rekomendasi_album.dart';
 
 class DetailRekomendasiPage extends StatefulWidget {
   final RekomendasiAlbum rekomendasiAlbum;
 
   const DetailRekomendasiPage({
-    super.key,
+    Key? key,
     required this.rekomendasiAlbum,
-  });
+  }) : super(key: key);
 
   @override
   State<DetailRekomendasiPage> createState() => _DetailPageState();
 }
 
 class _DetailPageState extends State<DetailRekomendasiPage> {
+  bool isFavorite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfFavorite();
+  }
+
+  void _checkIfFavorite() async {
+    final isFavorited = await FavoriteManager.isAlbumFavorited(widget.rekomendasiAlbum.albumName);
+    setState(() {
+      isFavorite = isFavorited;
+    });
+  }
+
+  void _toggleFavorite() {
+    setState(() {
+      isFavorite = !isFavorite;
+    });
+
+    FavoriteManager.toggleFavoriteAlbum(widget.rekomendasiAlbum.albumName);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(isFavorite ? 'Added to favorites' : 'Removed from favorites'),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,10 +53,11 @@ class _DetailPageState extends State<DetailRekomendasiPage> {
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: () {
-
-            },
-            icon: const Icon(Icons.favorite_border),
+            onPressed: _toggleFavorite,
+            icon: Icon(
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: isFavorite ? Colors.red : null,
+            ),
           ),
         ],
       ),
@@ -168,10 +199,10 @@ class _DetailPageState extends State<DetailRekomendasiPage> {
   }
 }
 
-Future<void> _launchURL(String url) async{
-  if(await canLaunchUrl(Uri.parse(url))){
-    launchUrl(Uri.parse(url));
-  }else {
+Future<void> _launchURL(String url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
     throw 'Error cannot launch $url';
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tugas4tpm/screens/home_page.dart';
-import 'package:tugas4tpm/screens/login_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   final String? message;
@@ -21,6 +21,23 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     message = widget.message;
+  }
+
+  void _saveAuthCredentials(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('username', userController.text);
+    prefs.setBool('isAuth', value).then((bool success) {
+      if (success) {
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) {
+              return const HomePage();
+            }),
+          );
+        }
+      }
+    });
   }
 
   Widget _inputField(String hintText,
@@ -55,12 +72,9 @@ class _LoginPageState extends State<LoginPage> {
       child: ElevatedButton(
         onPressed: () {
           if (_formKey.currentState!.validate()) {
-            if (userController.text == "user@gmail.com" && passController.text == "12345678") {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
-              );
+            if (userController.text == "user@gmail.com" &&
+                passController.text == "12345678") {
+              _saveAuthCredentials(true); // Save credentials if login successful
             } else {
               setState(() {
                 message = "Login Gagal";
@@ -119,7 +133,15 @@ class _LoginPageState extends State<LoginPage> {
                               fontSize: 16,
                               fontWeight: FontWeight.bold)),
                     ),
-                  _elevatedButton("Login", context),
+                  ElevatedButton(
+                    onPressed: () {
+                      final isValid = _formKey.currentState?.validate();
+                      if (isValid ?? false) {
+                        _saveAuthCredentials(isValid!);
+                      }
+                    },
+                    child: const Text('Login'),
+                  ),
                 ],
               ),
             ),
