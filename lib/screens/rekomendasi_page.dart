@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tugas4tpm/models/rekomendasi_album.dart';
 import 'package:tugas4tpm/screens/login_page.dart';
 import 'package:tugas4tpm/widgets/rekomendasi_item.dart';
@@ -15,16 +16,17 @@ class RekomendasiPage extends StatelessWidget {
         centerTitle: true,
         actions: [
           IconButton(
-              icon: const Icon(
-                Icons.logout,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                );
-              }
+            icon: const Icon(
+              Icons.logout,
+            ),
+            onPressed: () async {
+              final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+              sharedPreferences.remove('email');
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
+            }
           ),
         ],
       ),

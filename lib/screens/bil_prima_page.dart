@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tugas4tpm/constant/colors.dart';
 import 'package:tugas4tpm/provider/bil_prima_provider.dart';
 import 'package:tugas4tpm/screens/widgets_data.dart';
@@ -24,17 +25,18 @@ class BilPrimaPage extends StatelessWidget {
           return Scaffold(
             backgroundColor: Colors.black,
             appBar: AppBar(
-              title: Text("Bilangan Prima"),
+              title: const Text("Bilangan Prima"),
               backgroundColor: Colors.black,
               centerTitle: true,
               actions: [
                 IconButton(
-                  icon: const Icon(
-                  Icons.logout,
-                  ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.push(
+                    icon: const Icon(
+                      Icons.logout,
+                    ),
+                    onPressed: () async {
+                      final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                      sharedPreferences.remove('email');
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => const LoginPage()),
                       );

@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:tugas4tpm/screens/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+String? finalEmail;
+
 class LoginPage extends StatefulWidget {
   final String? message;
 
-  const LoginPage({Key? key, this.message}) : super(key: key);
+  const LoginPage({super.key, this.message});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final userController = TextEditingController();
+  final emailController = TextEditingController();
   final passController = TextEditingController();
   String? message;
   final _formKey = GlobalKey<FormState>();
@@ -20,24 +22,24 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    getValidationData();
     message = widget.message;
   }
 
-  void _saveAuthCredentials(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('username', userController.text);
-    prefs.setBool('isAuth', value).then((bool success) {
-      if (success) {
-        if (mounted) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) {
-              return const HomePage();
-            }),
-          );
-        }
-      }
-    });
+  Future<void> getValidationData() async {
+    final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var obtainedEmail = sharedPreferences.getString('email');
+    if (obtainedEmail != null) {
+      setState(() {
+        finalEmail = obtainedEmail;
+      });
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) {
+          return const HomePage();
+        }),
+      );
+    }
   }
 
   Widget _inputField(String hintText,
@@ -70,11 +72,20 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       padding: const EdgeInsets.fromLTRB(8.0, 25.0, 8.0, 0.0),
       child: ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
+          final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
           if (_formKey.currentState!.validate()) {
-            if (userController.text == "user@gmail.com" &&
+            if (emailController.text == "user@gmail.com" &&
                 passController.text == "12345678") {
-              _saveAuthCredentials(true); // Save credentials if login successful
+              sharedPreferences.setString('email', emailController.text);
+              getValidationData();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) {
+                  return const HomePage();
+                }),
+              );
             } else {
               setState(() {
                 message = "Login Gagal";
@@ -85,8 +96,8 @@ class _LoginPageState extends State<LoginPage> {
           }
         },
         style: ElevatedButton.styleFrom(
-          minimumSize: const Size(380, 60),
-        ),
+              minimumSize: const Size(380, 60),
+            ),
         child: Text(
           text,
           style: const TextStyle(fontSize: 16),
@@ -122,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(fontSize: 20),
                     ),
                   ),
-                  _inputField("Email", controller: userController),
+                  _inputField("Email", controller: emailController),
                   _inputField("Password", controller: passController, isPassword: true),
                   if (message != null)
                     Padding(
@@ -133,15 +144,7 @@ class _LoginPageState extends State<LoginPage> {
                               fontSize: 16,
                               fontWeight: FontWeight.bold)),
                     ),
-                  ElevatedButton(
-                    onPressed: () {
-                      final isValid = _formKey.currentState?.validate();
-                      if (isValid ?? false) {
-                        _saveAuthCredentials(isValid!);
-                      }
-                    },
-                    child: const Text('Login'),
-                  ),
+                  _elevatedButton("Login", context),
                 ],
               ),
             ),

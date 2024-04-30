@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tugas4tpm/screens/bantuan_page.dart';
 import 'package:tugas4tpm/screens/home_page.dart';
 import 'package:tugas4tpm/screens/login_page.dart';
@@ -85,16 +86,17 @@ class _StopwatchPageState extends State<StopwatchPage> {
         centerTitle: true,
         actions: [
           IconButton(
-              icon: const Icon(
-                Icons.logout,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                );
-              }
+            icon: const Icon(
+              Icons.logout,
+            ),
+            onPressed: () async {
+              final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+              sharedPreferences.remove('email');
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
+            }
           ),
         ],
       ),
@@ -218,9 +220,9 @@ class _StopwatchPageState extends State<StopwatchPage> {
                               color: Colors.grey,
                             )
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: const Text(
+                          child: const Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Text(
                               'Reset',
                               style: TextStyle(
                                 color: Colors.white,
@@ -239,13 +241,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
         ),
       ),
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.grey.shade800,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(16.0),  // Rounded top left corner
-            topRight: Radius.circular(16.0), // Rounded top right corner
-          ),
-        ),
+        color: Colors.grey.shade800,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           child: GNav(
@@ -273,16 +269,9 @@ class _StopwatchPageState extends State<StopwatchPage> {
                   );
                   break;
                 case 2:
-<<<<<<< HEAD
-                // Do nothing, we're already on the BantuanPage
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => BantuanPage()),
-=======
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => const BantuanPage()),
->>>>>>> ad33621369d942d96c80c3e8c91df89a4e48b5f3
                   );
                   break;
               }

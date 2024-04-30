@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math' as math;
 
 import 'package:tugas4tpm/screens/login_page.dart';
 
 class SegitigaPage extends StatefulWidget {
-  const SegitigaPage({Key? key}) : super(key: key);
+  const SegitigaPage({super.key});
 
   @override
   _TriangleCalculatorPageState createState() => _TriangleCalculatorPageState();
@@ -50,16 +51,17 @@ class _TriangleCalculatorPageState extends State<SegitigaPage> {
         centerTitle: true,
         actions: [
           IconButton(
-              icon: const Icon(
-                Icons.logout,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                );
-              }
+            icon: const Icon(
+              Icons.logout,
+            ),
+            onPressed: () async {
+              final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+              sharedPreferences.remove('email');
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
+            }
           ),
         ],
       ),
@@ -72,27 +74,27 @@ class _TriangleCalculatorPageState extends State<SegitigaPage> {
               TextField(
                 controller: sisiAController,
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(labelText: 'Sisi A'),
+                decoration: const InputDecoration(labelText: 'Sisi A'),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextField(
                 controller: sisiBController,
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(labelText: 'Sisi B'),
+                decoration: const InputDecoration(labelText: 'Sisi B'),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextField(
                 controller: sisiCController,
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(labelText: 'Sisi C'),
+                decoration: const InputDecoration(labelText: 'Sisi C'),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextField(
                 controller: tinggiController,
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(labelText: 'Tinggi'),
+                decoration: const InputDecoration(labelText: 'Tinggi'),
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: _calculate,
                 style: ElevatedButton.styleFrom(
@@ -100,7 +102,7 @@ class _TriangleCalculatorPageState extends State<SegitigaPage> {
                 ),
                 child: const Text(
                   'CALCULATE',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                   ),
                 ),
@@ -114,7 +116,7 @@ class _TriangleCalculatorPageState extends State<SegitigaPage> {
                     Container(
                       width: 160,
                       height: 100,
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: Colors.white24,
                         borderRadius: BorderRadius.circular(8),
@@ -130,7 +132,7 @@ class _TriangleCalculatorPageState extends State<SegitigaPage> {
                     Container(
                       width: 160,
                       height: 100,
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: Colors.white24,
                         borderRadius: BorderRadius.circular(8),

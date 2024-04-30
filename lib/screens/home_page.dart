@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tugas4tpm/screens/bantuan_page.dart';
 import 'package:tugas4tpm/screens/bil_prima_page.dart';
 import 'package:tugas4tpm/screens/favorite_page.dart';
@@ -51,16 +52,17 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         actions: [
           IconButton(
-              icon: const Icon(
-                Icons.logout,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                );
-              }
+            icon: const Icon(
+              Icons.logout,
+            ),
+            onPressed: () async {
+              final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+              sharedPreferences.remove('email');
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
+            }
           ),
         ],
       ),
@@ -72,6 +74,16 @@ class _HomePageState extends State<HomePage> {
             // crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: [
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  'Welcome, ${finalEmail!.split('@').first}!',
+                  style: const TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
               _customElevatedButton(
                 text: 'Daftar Anggota',
                 onPressed: () {
@@ -122,13 +134,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.grey.shade800,
-          // borderRadius: BorderRadius.only(
-          //   topLeft: Radius.circular(28.0),  // Rounded top left corner
-          //   topRight: Radius.circular(28.0), // Rounded top right corner
-          // ),
-        ),
+        color: Colors.grey.shade800,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           child: GNav(
@@ -136,7 +142,7 @@ class _HomePageState extends State<HomePage> {
             activeColor: Colors.white,
             tabBackgroundColor: Colors.white24,
             gap: 14,
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             selectedIndex: _selectedIndex, // Mengatur tab yang aktif
             onTabChange: (index) {
               setState(() {
@@ -146,19 +152,19 @@ class _HomePageState extends State<HomePage> {
                 case 0:
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => StopwatchPage()),
+                    MaterialPageRoute(builder: (context) => const StopwatchPage()),
                   );
                   break;
                 case 1:
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
+                    MaterialPageRoute(builder: (context) => const HomePage()),
                   );
                   break;
                 case 2:
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => BantuanPage()),
+                    MaterialPageRoute(builder: (context) => const BantuanPage()),
                   );
                   break;
               }

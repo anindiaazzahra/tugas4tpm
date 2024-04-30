@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tugas4tpm/screens/favorite_manager.dart';
+import 'package:tugas4tpm/services/favorite_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:tugas4tpm/models/rekomendasi_album.dart';
 
