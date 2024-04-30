@@ -156,7 +156,10 @@ class _HomePageState extends State<HomePage> {
                   );
                   break;
                 case 2:
-                // Do nothing, we're already on the BantuanPage
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => BantuanPage()),
+                  );
                   break;
               }
             },
