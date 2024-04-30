@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:tugas4tpm/screens/bantuan_page.dart';
@@ -13,6 +14,68 @@ class StopwatchPage extends StatefulWidget {
 
 class _StopwatchPageState extends State<StopwatchPage> {
   int _selectedIndex = 0; // Indeks tab yang aktif saat ini
+
+  int seconds = 0, minutes = 0, hours = 0;
+  String digitSeconds = '00', digitMinutes = '00', digitHours = '00';
+  Timer? timer;
+  bool started = false;
+  List laps = [];
+
+  void stopTime() {
+    timer!.cancel();
+    setState(() {
+      started = false;
+    });
+  }
+
+  void resetTime() {
+    timer!.cancel();
+    setState(() {
+      seconds = 0;
+      minutes = 0;
+      hours = 0;
+
+      digitSeconds = '00';
+      digitMinutes = '00';
+      digitHours = '00';
+
+      started = false;
+    });
+  }
+
+  void addLaps() {
+    String lap = '$digitHours:$digitMinutes:$digitSeconds';
+    setState(() {
+      laps.add(lap);
+    });
+  }
+
+  void startTime() {
+    started = true;
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      int localSeconds = seconds + 1;
+      int localMinutes = minutes;
+      int localHours = hours;
+
+      if (localSeconds > 59) {
+        if (localMinutes > 59) {
+          localHours++;
+          localMinutes = 0;
+        } else {
+          localMinutes++;
+          localSeconds = 0;
+        }
+      }
+      setState(() {
+        seconds = localSeconds;
+        minutes = localMinutes;
+        hours = localHours;
+        digitSeconds = (seconds >= 10) ? '$seconds' : '0$seconds';
+        digitMinutes = (minutes >= 10) ? '$minutes' : '0$minutes';
+        digitHours = (hours >= 10) ? '$hours' : '0$hours';
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,13 +98,153 @@ class _StopwatchPageState extends State<StopwatchPage> {
           ),
         ],
       ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Center(
+                child: Text(
+                  '$digitHours:$digitMinutes:$digitSeconds',
+                  style: const TextStyle(
+                    fontSize: 80.0,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 0.0),
+                child: Container(
+                  height: 400.0,
+                  decoration: BoxDecoration(
+                    color: Colors.white24,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: ListView.builder(
+                    itemCount: laps.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 0.0),
+                        child: Container(
+                          height: 58,
+                          decoration: BoxDecoration(
+                            color: Colors.black26,
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Lap ke-${index + 1}',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20.0,
+                                  ),
+                                ),
+                                Text(
+                                  '${laps[index]}',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20.0,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20.0,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(22.0, 0.0, 22.0, 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: RawMaterialButton(
+                        onPressed: () {
+                          if (!started) {
+                            startTime();
+                          } else {
+                            stopTime();
+                          }
+                        },
+                        fillColor: Colors.black,
+                        shape: const StadiumBorder(
+                          side: BorderSide(
+                            color: Colors.grey,
+                          )
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Text(
+                            (!started) ? 'Start' : 'Pause',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
+                          ),
+                        )
+                      ),
+                    ),
+                    const SizedBox(
+                        width: 8.0
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        addLaps();
+                      },
+                      icon: const Icon(Icons.flag),
+                      color: Colors.white,
+                    ),
+                    Expanded(
+                      child: RawMaterialButton(
+                          onPressed: () {
+                            resetTime();
+                          },
+                          fillColor: Colors.black,
+                          shape: const StadiumBorder(
+                            side: BorderSide(
+                              color: Colors.grey,
+                            )
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: const Text(
+                              'Reset',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
+                          )
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+
+        ),
+      ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: Colors.grey.shade800,
-          // borderRadius: BorderRadius.only(
-          //   topLeft: Radius.circular(28.0),  // Rounded top left corner
-          //   topRight: Radius.circular(28.0), // Rounded top right corner
-          // ),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16.0),  // Rounded top left corner
+            topRight: Radius.circular(16.0), // Rounded top right corner
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -50,7 +253,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
             activeColor: Colors.white,
             tabBackgroundColor: Colors.white24,
             gap: 14,
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             selectedIndex: _selectedIndex, // Mengatur tab yang aktif
             onTabChange: (index) {
               setState(() {
@@ -60,20 +263,26 @@ class _StopwatchPageState extends State<StopwatchPage> {
                 case 0:
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => StopwatchPage()),
+                    MaterialPageRoute(builder: (context) => const StopwatchPage()),
                   );
                   break;
                 case 1:
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
+                    MaterialPageRoute(builder: (context) => const HomePage()),
                   );
                   break;
                 case 2:
+<<<<<<< HEAD
                 // Do nothing, we're already on the BantuanPage
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => BantuanPage()),
+=======
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const BantuanPage()),
+>>>>>>> ad33621369d942d96c80c3e8c91df89a4e48b5f3
                   );
                   break;
               }
